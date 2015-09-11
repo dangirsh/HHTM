@@ -1,19 +1,36 @@
-module Types () where
+module Types where
+
+import Data.Map (Map)
 
 type Permanence = Float
 
-type SynapseWeight = Bool
+data Synapse = Synapse Permanence
 
-type Input = [Bool]
+data Region = Region [Col]
 
-type InputStream = [Input]
+-- Cell
 
 data Cell = Cell CellState [Cell]
 
-data CellState = Active | Inactive | Predicted
+data CellState = CellActive | CellInactive | CellPredicted
 
-type ColumnState = Bool
 
-type PotentialPool = [Int]
+-- Column
 
-data Column = Column [Cell] ColumnState PotentialPool
+data ColState = ColActive | ColInactive
+
+data Col = Col { state :: ColState
+               , inhibitionRadius :: Float
+               , boostingFactor :: Float
+               , cells :: [Cell]
+               , potentialPool :: Map InputIndex Permanence
+               }
+
+
+-- Input
+
+type InputIndex = Int
+
+type Input = Map InputIndex Bool
+
+type InputStream = [Input]
