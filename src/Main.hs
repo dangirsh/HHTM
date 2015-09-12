@@ -1,6 +1,11 @@
 module Main (main) where
 
+import qualified Data.Map as M
+
 import Types
+import SpatialPooler
+
+
 
 {-- When a column becomes active, it looks at all the cells in the column. If one
     or more cells in the column are already in the predictive state, only those cells
@@ -12,12 +17,14 @@ import Types
     so all possible interpretations are valid”. --}
 -- stepCol :: Col -> Col
 -- stepCol (Col cells ColActive pp)
---   | any cellActive cells = Col (map stepCell cells) ColInactive pp
---   | otherwise = Col (map activateCell cells) ColInactive pp  -- burst
---   where
---     activateCell (Cell _ cons) = Cell CellActive cons
---     cellActive (Cell CellActive _) = True
---     cellActive _ = False
+--   | any cellActive cells =
+--     Col (map stepCell cells) ColInactive pp
+--   | otherwise =
+--     Col (map activateCell cells) ColInactive pp  -- burst
+--   where activateCell (Cell _ cons) =
+--           Cell CellActive cons
+--         cellActive (Cell CellActive _) = True
+--         cellActive _ = False
 -- stepCol col = col
 
 -- stepCell :: Cell -> Cell
@@ -25,4 +32,16 @@ import Types
 -- stepCell cell = cell
 
 main :: IO ()
-main = putStrLn "I am conscious"
+main =
+  do let cellA = Cell CellActive False
+     let cellB = cellA
+     let col1 =
+           Col {state = ColActive
+               ,inhibitionRadius = 0.0
+               ,boostingFactor = 1.0
+               ,cells = [cellA,cellB]
+               ,potentialPool = [2,3]}
+     let col2 = col1
+     let region = Region [col1,col2]
+     let input = [True,False,True,False]
+     spatiallyPool region input
