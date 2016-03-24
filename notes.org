@@ -1,0 +1,11 @@
+* Implementation
+** Functionality
+*** Spatial Pooler
+*** Temporal Pooler
+** Clarity
+*** lens
+** Performance
+* Testing
+* Questions
+** How do regions feed inputs to higher levels of the heirarchy
+* Misc

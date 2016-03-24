@@ -1,3 +1,5 @@
 module Constants where
 
-permanenceThreshold = 2.0
+permanenceThreshold = 0.4 :: Double
+
+colActiveCutoffPercent = 0.02 :: Double

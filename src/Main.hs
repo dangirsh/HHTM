@@ -31,17 +31,25 @@ import SpatialPooler
 -- stepCell (Cell CellPredicted cons) = (Cell CellActive cons)
 -- stepCell cell = cell
 
-main :: IO ()
-main =
+testSpatiallyPool :: IO ()
+testSpatiallyPool =
   do let cellA = Cell CellActive False
      let cellB = cellA
      let col1 =
            Col {state = ColActive
-               ,inhibitionRadius = 0.0
-               ,boostingFactor = 1.0
+               -- ,inhibitionRadius = 0.0
+               -- ,boostingFactor = 1.0
                ,cells = [cellA,cellB]
-               ,potentialPool = [2,3]}
+               ,potentialPool = [0.5, 0.5]}
      let col2 = col1
      let region = Region [col1,col2]
      let input = [True,False,True,False]
-     spatiallyPool region input
+     let newRegion = spatiallyPool region input
+     print $ "Inputs: " ++ (show input)
+     print region
+     print newRegion
+     return ()
+
+
+main :: IO ()
+main = testSpatiallyPool
