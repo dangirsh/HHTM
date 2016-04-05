@@ -7,7 +7,7 @@ module SpatialPooler (
 -- using inhibition to select a sparse set of active columns
 
 import Types
-import PotentialPool (numActiveSynapses)
+import PotentialPool (numValidSynapses)
 import Util (topPercent)
 import Constants (colActiveCutoffPercent)
 
@@ -24,13 +24,26 @@ import qualified Data.Map as M
 spatiallyPool :: Region -> Input -> Region
 spatiallyPool region@(Region {cols=cols}) input = Region {cols=newCols}
   where
-    activations = map (fromIntegral . numActiveSynapses . potentialPool) cols
-    colActiveNext col = elem col $ map snd $ topPercent colActiveCutoffPercent $ zip activations cols
-    colUpdateState col = col {state = if colActiveNext col then ColActive else ColInactive}
-    newCols = map colUpdateState cols -- TODO: update weights
+    newCols = map (colUpdate cols) cols -- TODO: update weights
 
--- For any given input, determine how many valid synapses on each column are
--- connected to active input bits.
+colUpdate :: [Col] -> Col -> Col
+colUpdate cols col= col {state = newState
+                        ,potentialPool = newPotentialPool}
+  where
+    newState = if colActiveNext col cols then ColActive else ColInactive
+    newPotentialPool = undefined
+
+-- A column becomes active if it is in the top colActiveCutoffPercent of columns
+-- based on the number of active synapses it has for this region input.
+colActiveNext :: Col -> [Col] -> Bool
+colActiveNext col = elem col . topCol
+s
+-- Sort the columns by the number of valid synapses they have for this region input (decreasing)
+-- Then, take the first colActiveCutoffPercent percent of columns and return them.
+topCols :: [Col] -> [Col]
+topCols cols = map snd
+             $ topPercent colActiveCutoffPercent
+             $ zip (map (numValidSynapses . potentialPool) cols) cols
 
 
 -- The number of active synapses is multiplied b y a “boosting” factor which is
